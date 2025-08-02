@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document.it - AI-Powered Career Analytics</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Inter Font (Aptos-style) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner hidden">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification hidden">
+        <span id="notificationText"></span>
+        <button onclick="hideNotification()" class="notification-close">&times;</button>
+    </div>
+
+    <!-- Landing Page -->
+    <div id="landingPage" class="page active">
+        <div class="landing-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="logo">
+                        <h1>📊 Document.it</h1>
+                        <p class="tagline">AI-Powered Career Analytics</p>
+                    </div>
+                    <h2>Transform Your Career Data into Actionable Insights</h2>
+                    <p class="hero-description">Track your professional growth, analyze skill development, and receive AI-powered recommendations for career advancement.</p>
+                    <div class="hero-actions">
+                        <button class="btn btn--primary btn--lg" onclick="showSignup()">Start Free Trial</button>
+                        <button class="btn btn--outline btn--lg" onclick="showLogin()">Sign In</button>
+                    </div>
+                </div>
+                <div class="hero-features">
+                    <div class="feature-card">
+                        <div class="feature-icon">🤖</div>
+                        <h3>AI Analytics</h3>
+                        <p>AI analyzes your career progression and provides personalized insights</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📈</div>
+                        <h3>Growth Tracking</h3>
+                        <p>Monitor skill development and career milestones over time</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📋</div>
+                        <h3>Smart Reports</h3>
+                        <p>Quarterly and semi-annual reports for performance reviews</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Authentication Modal -->
+    <div id="authModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="authTitle">Sign In</h2>
+                <button onclick="hideAuth()" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="authForm">
+                    <div class="form-group">
+                        <label for="authEmail">Email</label>
+                        <input type="email" id="authEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="authPassword">Password</label>
+                        <input type="password" id="authPassword" required>
+                    </div>
+                    <div id="signupFields" class="signup-only hidden">
+                        <div class="form-group">
+                            <label for="authName">Full Name</label>
+                            <input type="text" id="authName">
+                        </div>
+                        <div class="form-group">
+                            <label for="authConfirmPassword">Confirm Password</label>
+                            <input type="password" id="authConfirmPassword">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full">
+                        <span id="authButtonText">Sign In</span>
+                    </button>
+                </form>
+                <div class="auth-switch">
+                    <p id="authSwitchText">Don't have an account? <a href="#" onclick="toggleAuthMode()">Create Account</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboardPage" class="page hidden">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <h2>📊 Document.it</h2>
+            </div>
+            <div class="nav-menu">
+                <a href="#" onclick="showDashboard()" class="nav-link active">Dashboard</a>
+                <a href="#" onclick="generateAIInsights()" class="nav-link">AI Analytics</a>
+                <a href="#" onclick="generateReport()" class="nav-link">Reports</a>
+                <a href="#" onclick="logout()" class="nav-link">Logout</a>
+            </div>
+        </nav>
+
+        <div class="dashboard-content">
+            <div class="container">
+                <div class="dashboard-header">
+                    <h1>Welcome back, <span id="userName">User</span>!</h1>
+                    <p>Your AI-powered career analytics dashboard</p>
+                </div>
+
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">📝</div>
+                        <div class="stat-content">
+                            <h3 id="totalEntries">0</h3>
+                            <p>Career Entries</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-content">
+                            <h3 id="skillsTracked">0</h3>
+                            <p>Skills Tracked</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-content">
+                            <h3 id="growthScore">0</h3>
+                            <p>Growth Score</p>
+                        </div>
+                    </div>
+                    <div class="stat-card ai-stat">
+                        <div class="stat-icon">🤖</div>
+                        <div class="stat-content">
+                            <h3 id="aiInsights">0</h3>
+                            <p>AI Insights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-actions">
+                    <button class="btn btn--primary" onclick="showForm()">📝 New Entry</button>
+                    <button class="btn btn--secondary" onclick="generateAIInsights()">🤖 Generate AI Insights</button>
+                    <button class="btn btn--outline" onclick="generateReport()">📋 Generate Report</button>
+                </div>
+
+                <div class="ai-insights-section">
+                    <h2>🤖 Latest AI Insights</h2>
+                    <div id="aiInsightsList" class="ai-insights-container">
+                        <p class="empty-state">Sign in successfully! AI insights will appear here after you add some career data.</p>
+                    </div>
+                </div>
+
+                <div class="recent-entries">
+                    <h2>Recent Entries</h2>
+                    <div id="recentEntriesList">
+                        <p class="empty-state">No entries yet. Create your first career entry!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
