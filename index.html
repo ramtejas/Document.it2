@@ -5,178 +5,316 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document.it - AI-Powered Career Analytics</title>
     <link rel="stylesheet" href="style.css">
-
-    <!-- PDF Generation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-    <!-- Chart.js for Analytics -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- Inter Font (Aptos-style) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Loading Spinner -->
-    <div id="loadingSpinner" class="loading-spinner hidden">
-        <div class="spinner"></div>
-        <p>Loading...</p>
-    </div>
-
-    <!-- Notification -->
-    <div id="notification" class="notification hidden">
-        <span id="notificationText"></span>
-        <button onclick="hideNotification()" class="notification-close">&times;</button>
-    </div>
-
     <!-- Landing Page -->
-    <div id="landingPage" class="page active">
-        <div class="landing-hero">
+    <div id="landing-page" class="page active">
+        <header class="header">
+            <div class="container">
+                <div class="flex justify-between items-center">
+                    <div class="logo">
+                        <h1>Document.it</h1>
+                        <span class="tagline">AI-Powered Career Analytics</span>
+                    </div>
+                    <nav class="nav">
+                        <button id="sign-in-btn" class="btn btn--primary">Sign In</button>
+                    </nav>
+                </div>
+            </div>
+        </header>
+        
+        <main class="hero">
             <div class="container">
                 <div class="hero-content">
-                    <div class="logo">
-                        <h1>📊 Document.it</h1>
-                        <p class="tagline">AI-Powered Career Analytics</p>
-                    </div>
-                    <h2>Transform Your Career Data into Actionable Insights</h2>
-                    <p class="hero-description">Track your professional growth, analyze skill development, and receive AI-powered recommendations for career advancement.</p>
+                    <h2>Transform Your Career Journey with AI-Powered Analytics</h2>
+                    <p>Track your professional growth, analyze your skills, and unlock insights to accelerate your career development.</p>
                     <div class="hero-actions">
-                        <button class="btn btn--primary btn--lg" onclick="showSignup()">Start Free Trial</button>
-                        <button class="btn btn--outline btn--lg" onclick="showLogin()">Sign In</button>
-                    </div>
-                </div>
-                <div class="hero-features">
-                    <div class="feature-card">
-                        <div class="feature-icon">🤖</div>
-                        <h3>AI Analytics</h3>
-                        <p>AI analyzes your career progression and provides personalized insights</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📈</div>
-                        <h3>Growth Tracking</h3>
-                        <p>Monitor skill development and career milestones over time</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📋</div>
-                        <h3>Smart Reports</h3>
-                        <p>Quarterly and semi-annual reports for performance reviews</p>
+                        <button id="get-started-btn" class="btn btn--primary btn--lg">Get Started</button>
+                        <button class="btn btn--outline btn--lg">Learn More</button>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="page">
+        <header class="dashboard-header">
+            <div class="container">
+                <div class="dashboard-nav">
+                    <div class="dashboard-logo">
+                        <h1>Document.it</h1>
+                    </div>
+                    <div class="dashboard-actions">
+                        <span id="user-name" class="user-name">Welcome back!</span>
+                        <button id="admin-btn" class="btn btn--secondary hidden">Admin</button>
+                        <button id="logout-btn" class="btn btn--outline">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-main">
+            <div class="container">
+                <div class="dashboard-content">
+                    <section class="stats-section">
+                        <h2>Your Career Analytics</h2>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <h3>Total Entries</h3>
+                                <div id="total-entries" class="stat-number">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Skills Tracked</h3>
+                                <div id="total-skills" class="stat-number">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Avg Mental Health</h3>
+                                <div id="avg-mental-health" class="stat-number">-</div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>This Week</h3>
+                                <div id="this-week-entries" class="stat-number">0</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="actions-section">
+                        <div class="section-header">
+                            <h2>Quick Actions</h2>
+                            <button id="new-entry-btn" class="btn btn--primary">📝 New Entry</button>
+                        </div>
+                        
+                        <div class="recent-entries">
+                            <h3>Recent Entries</h3>
+                            <div id="recent-entries-list" class="entries-list">
+                                <p class="no-entries">No entries yet. Create your first entry to get started!</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Career Entry Form -->
+    <div id="entry-form" class="page">
+        <header class="form-header">
+            <div class="container">
+                <div class="form-nav">
+                    <button id="back-to-dashboard" class="btn btn--outline">← Back to Dashboard</button>
+                    <h2>New Career Entry</h2>
+                </div>
+            </div>
+        </header>
+
+        <main class="form-main">
+            <div class="container">
+                <form id="career-entry-form" class="career-form">
+                    <div class="form-grid">
+                        <!-- Week Date -->
+                        <div class="form-group">
+                            <label class="form-label" for="weekDate">Week Starting Date *</label>
+                            <input type="date" id="weekDate" name="weekDate" class="form-control" required>
+                        </div>
+
+                        <!-- Project Name -->
+                        <div class="form-group">
+                            <label class="form-label" for="projectName">Project or Client Name</label>
+                            <input type="text" id="projectName" name="projectName" class="form-control" placeholder="Enter project or client name">
+                        </div>
+
+                        <!-- Responsibility Category -->
+                        <div class="form-group">
+                            <label class="form-label" for="responsibilityCategory">Responsibility Category *</label>
+                            <select id="responsibilityCategory" name="responsibilityCategory" class="form-control" required>
+                                <option value="">Select a category</option>
+                            </select>
+                        </div>
+
+                        <!-- Responsibility Description -->
+                        <div class="form-group full-width">
+                            <label class="form-label" for="responsibilityDescription">Responsibility Description *</label>
+                            <textarea id="responsibilityDescription" name="responsibilityDescription" class="form-control" rows="4" placeholder="Describe your key responsibilities and tasks" required></textarea>
+                        </div>
+
+                        <!-- Difficulty Rating -->
+                        <div class="form-group">
+                            <label class="form-label">Difficulty Rating *</label>
+                            <div class="rating-container">
+                                <div id="difficultyRating" class="star-rating" data-rating="0">
+                                    <span class="star" data-value="1">★</span>
+                                    <span class="star" data-value="2">★</span>
+                                    <span class="star" data-value="3">★</span>
+                                    <span class="star" data-value="4">★</span>
+                                    <span class="star" data-value="5">★</span>
+                                </div>
+                                <span class="rating-label">Click to rate</span>
+                            </div>
+                        </div>
+
+                        <!-- Impact Assessment -->
+                        <div class="form-group full-width">
+                            <label class="form-label" for="impactAssessment">Impact Assessment</label>
+                            <textarea id="impactAssessment" name="impactAssessment" class="form-control" rows="3" placeholder="Describe the impact of your work"></textarea>
+                        </div>
+
+                        <!-- Leadership & Initiative -->
+                        <div class="form-group full-width">
+                            <label class="form-label" for="leadership">Leadership & Initiative</label>
+                            <textarea id="leadership" name="leadership" class="form-control" rows="3" placeholder="Describe any leadership or initiative activities"></textarea>
+                        </div>
+
+                        <!-- Skills Used -->
+                        <div class="form-group full-width">
+                            <label class="form-label" for="skillsUsed">Skills Used *</label>
+                            <div class="skills-input-container">
+                                <input type="text" id="skillsInput" class="form-control" placeholder="Type to search or add skills...">
+                                <div id="skillsSuggestions" class="skills-suggestions hidden"></div>
+                                <div id="selectedSkills" class="selected-skills"></div>
+                            </div>
+                        </div>
+
+                        <!-- Proficiency Level -->
+                        <div class="form-group">
+                            <label class="form-label" for="proficiencyLevel">Proficiency Level *</label>
+                            <select id="proficiencyLevel" name="proficiencyLevel" class="form-control" required>
+                                <option value="">Select proficiency</option>
+                                <option value="Beginner">Beginner</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Advanced">Advanced</option>
+                                <option value="Expert">Expert</option>
+                            </select>
+                        </div>
+
+                        <!-- Usage Intensity -->
+                        <div class="form-group">
+                            <label class="form-label">Usage Intensity *</label>
+                            <div class="rating-container">
+                                <div id="usageIntensity" class="star-rating" data-rating="0">
+                                    <span class="star" data-value="1">★</span>
+                                    <span class="star" data-value="2">★</span>
+                                    <span class="star" data-value="3">★</span>
+                                    <span class="star" data-value="4">★</span>
+                                    <span class="star" data-value="5">★</span>
+                                </div>
+                                <span class="rating-label">Click to rate</span>
+                            </div>
+                        </div>
+
+                        <!-- Skill Development Goals -->
+                        <div class="form-group full-width">
+                            <label class="form-label" for="skillGoals">Skill Development Goals</label>
+                            <textarea id="skillGoals" name="skillGoals" class="form-control" rows="3" placeholder="What skills do you want to develop?"></textarea>
+                        </div>
+
+                        <!-- Networking & Collaboration -->
+                        <div class="form-group full-width">
+                            <label class="form-label" for="networking">Networking & Collaboration</label>
+                            <textarea id="networking" name="networking" class="form-control" rows="3" placeholder="Describe networking and collaboration activities"></textarea>
+                        </div>
+
+                        <!-- Mental Health Slider -->
+                        <div class="form-group">
+                            <label class="form-label" for="mentalHealth">Weekly Mental Health Rating *</label>
+                            <div class="slider-container">
+                                <input type="range" id="mentalHealth" name="mentalHealth" class="mental-health-slider" min="0" max="10" value="5">
+                                <div class="slider-labels">
+                                    <span>0</span>
+                                    <span id="mental-health-value">5</span>
+                                    <span>10</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notes/Reflections -->
+                        <div class="form-group full-width">
+                            <label class="form-label" for="notes">Notes or Reflections *</label>
+                            <textarea id="notes" name="notes" class="form-control" rows="4" placeholder="Add any additional notes or reflections" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="cancel-entry" class="btn btn--outline">Cancel</button>
+                        <button type="submit" class="btn btn--primary">Save Entry</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" class="page">
+        <header class="admin-header">
+            <div class="container">
+                <div class="admin-nav">
+                    <button id="back-to-main-dashboard" class="btn btn--outline">← Back to Dashboard</button>
+                    <h2>Admin Panel</h2>
+                </div>
+            </div>
+        </header>
+
+        <main class="admin-main">
+            <div class="container">
+                <div class="admin-content">
+                    <section class="admin-section">
+                        <h3>User Management</h3>
+                        <div id="user-list" class="user-list">
+                            <!-- Users will be populated here -->
+                        </div>
+                    </section>
+
+                    <section class="admin-section">
+                        <h3>API Configuration</h3>
+                        <div class="config-form">
+                            <div class="form-group">
+                                <label class="form-label" for="perplexityApiKey">Perplexity AI API Key</label>
+                                <input type="password" id="perplexityApiKey" class="form-control" placeholder="Enter API key">
+                            </div>
+                            <button id="save-config" class="btn btn--primary">Save Configuration</button>
+                        </div>
+                    </section>
+
+                    <section class="admin-section">
+                        <h3>Data Export</h3>
+                        <button id="export-data" class="btn btn--secondary">Export All Data</button>
+                    </section>
+                </div>
+            </div>
+        </main>
     </div>
 
     <!-- Authentication Modal -->
-    <div id="authModal" class="modal hidden">
+    <div id="auth-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="authTitle">Sign In</h2>
-                <button onclick="hideAuth()" class="modal-close">&times;</button>
+                <h3 id="auth-title">Sign In</h3>
+                <button id="close-modal" class="close-btn">×</button>
             </div>
             <div class="modal-body">
-                <form id="authForm">
+                <form id="auth-form">
                     <div class="form-group">
-                        <label for="authEmail">Email</label>
-                        <input type="email" id="authEmail" required>
+                        <label class="form-label" for="email">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label for="authPassword">Password</label>
-                        <input type="password" id="authPassword" required>
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" id="password" name="password" class="form-control" required>
                     </div>
-                    <div id="signupFields" class="signup-only hidden">
-                        <div class="form-group">
-                            <label for="authName">Full Name</label>
-                            <input type="text" id="authName">
-                        </div>
-                        <div class="form-group">
-                            <label for="authConfirmPassword">Confirm Password</label>
-                            <input type="password" id="authConfirmPassword">
-                        </div>
+                    <div class="form-actions">
+                        <button type="submit" id="auth-submit" class="btn btn--primary btn--full-width">Sign In</button>
                     </div>
-                    <button type="submit" class="btn btn--primary btn--full">
-                        <span id="authButtonText">Sign In</span>
-                    </button>
                 </form>
-                <div class="auth-switch">
-                    <p id="authSwitchText">Don't have an account? <a href="#" onclick="toggleAuthMode()">Create Account</a></p>
+                <div class="auth-toggle">
+                    <p>Don't have an account? <button id="toggle-auth" class="link-btn">Sign Up</button></p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Dashboard Page -->
-    <div id="dashboardPage" class="page hidden">
-        <nav class="navbar">
-            <div class="nav-brand">
-                <h2>📊 Document.it</h2>
-            </div>
-            <div class="nav-menu">
-                <a href="#" onclick="showDashboard()" class="nav-link active">Dashboard</a>
-                <a href="#" onclick="generateAIInsights()" class="nav-link">AI Analytics</a>
-                <a href="#" onclick="generateReport()" class="nav-link">Reports</a>
-                <a href="#" onclick="logout()" class="nav-link">Logout</a>
-            </div>
-        </nav>
-
-        <div class="dashboard-content">
-            <div class="container">
-                <div class="dashboard-header">
-                    <h1>Welcome back, <span id="userName">User</span>!</h1>
-                    <p>Your AI-powered career analytics dashboard</p>
-                </div>
-
-                <div class="dashboard-stats">
-                    <div class="stat-card">
-                        <div class="stat-icon">📝</div>
-                        <div class="stat-content">
-                            <h3 id="totalEntries">0</h3>
-                            <p>Career Entries</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🎯</div>
-                        <div class="stat-content">
-                            <h3 id="skillsTracked">0</h3>
-                            <p>Skills Tracked</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">📈</div>
-                        <div class="stat-content">
-                            <h3 id="growthScore">0</h3>
-                            <p>Growth Score</p>
-                        </div>
-                    </div>
-                    <div class="stat-card ai-stat">
-                        <div class="stat-icon">🤖</div>
-                        <div class="stat-content">
-                            <h3 id="aiInsights">0</h3>
-                            <p>AI Insights</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="dashboard-actions">
-                    <button class="btn btn--primary" onclick="showForm()">📝 New Entry</button>
-                    <button class="btn btn--secondary" onclick="generateAIInsights()">🤖 Generate AI Insights</button>
-                    <button class="btn btn--outline" onclick="generateReport()">📋 Generate Report</button>
-                </div>
-
-                <div class="ai-insights-section">
-                    <h2>🤖 Latest AI Insights</h2>
-                    <div id="aiInsightsList" class="ai-insights-container">
-                        <p class="empty-state">Sign in successfully! AI insights will appear here after you add some career data.</p>
-                    </div>
-                </div>
-
-                <div class="recent-entries">
-                    <h2>Recent Entries</h2>
-                    <div id="recentEntriesList">
-                        <p class="empty-state">No entries yet. Create your first career entry!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Notifications -->
+    <div id="notifications" class="notifications-container"></div>
 
     <script src="app.js"></script>
 </body>
